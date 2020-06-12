@@ -1,0 +1,32 @@
+h1,
+h2 {
+    text-align: center;
+}
+
+#contenido {
+    margin-top: 40px;
+}
+
+.borrar-tweet,
+.borrar-tweet:hover {
+    float: right;
+    cursor: pointer;
+    color: red;
+    font-weight: bold;
+}
+
+li {
+    border: 3px solid #33C3F0;
+    border-radius: 15px;
+    padding: 1em;
+    color: #000;
+    background-color: #fff;
+    list-style: none;
+    text-align: center;
+    display: block;
+    transition: all 0.3s;
+}
+
+li:hover {
+    transform: scale(1.1);
+}

@@ -17,6 +17,9 @@ function cargarEventListener() {
     cursos.addEventListener('click', comprarCurso);
     carrito.addEventListener('click', eliminarCurso);
     vaciarCarritoBtn.addEventListener('click', vaciarCarrito)
+
+    //al cargar doc mostrar LS
+    document.addEventListener('DOMContentLoaded', leerLocalStorage);
 }
 
 
@@ -68,10 +71,13 @@ function insertarCarrito(curso) {
 //seleccionamos al padre del padre del elemento y lo eliminamos  (en este caso es el tr)
 function eliminarCurso(e) {
     e.preventDefault();
+    let curso, cursoid;
     if (e.target.classList.contains('borrar-curso')) {
         e.target.parentElement.parentElement.remove();
+        curso = e.target.parentElement.parentElement;
+        cursoid = curso.querySelector('a').getAttribute('data-id');
     }
-
+    eliminarCursoLS(cursoid);
 }
 
 function vaciarCarrito(e) {
@@ -84,6 +90,8 @@ function vaciarCarrito(e) {
     while (listaCursos.firstChild) {
         listaCursos.removeChild(listaCursos.firstChild);
     }
+    //Vaciar LS
+    vaciarLocalStorage();
 }
 
 //almacenar cursos en local storage
@@ -111,3 +119,42 @@ function obtenerCursosLocalStorage() {
     }
     return cursosLs;
 }
+
+//imprime los cursos de ls enc carrito
+function leerLocalStorage() {
+    let cursosLs = obtenerCursosLocalStorage();
+    cursosLs.forEach(curso => {
+        const row = document.createElement('tr');
+        //Creamos el formato que tendra cuando creemos un producto en el carrito
+        row.innerHTML = `
+            <td>
+                <img src="${curso.imagen}" width=100 >
+            </td>
+            <td>${curso.titulo}</td>
+            <td>${curso.precio}</td>
+            <td>
+            <a href="#" class="borrar-curso" data-id="${curso.id}">X</a>
+            </td>
+            `;
+        listaCursos.appendChild(row);
+
+    });
+}
+//elimina el curso del LS
+function eliminarCursoLS(curso) {
+    let cursosLS;
+    //obtenemos el arreglo de cursos
+    cursosLS = obtenerCursosLocalStorage();
+    //iteramos comparando el ide del curso borrado con los del LS
+    cursosLS.forEach(function(cursoLS, index) {
+            if (cursoLS.id === curso) {
+                cursosLS.splice(index, 1);
+            }
+        })
+        //anadimos el arreglo actual a LS
+    localStorage.setItem('cursos', JSON.stringify(cursosLS));
+}
+//elimina todoso los cursos de LS
+function vaciarLocalStorage() {
+    localStorage.clear();
+};
